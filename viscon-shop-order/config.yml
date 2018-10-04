@@ -1,0 +1,35 @@
+# TODO Step: Change the name of your shop
+shopName: Awesome Energy Drinks
+
+catalogueServiceIp: 172.26.25.229
+paymentServiceIp: 172.26.25.229
+
+# TODO Step: Enable Service Discovery with Consul
+serviceDiscoveryEnabled: true
+
+# TODO Step: Enable Connect proxy
+connectProxyEnabled: true
+
+# TODO Step: Change configuration key to your host name (e.g. viscon-<your chosen host name>)
+consulConfigurationKey: viscon-master
+
+server:
+  applicationConnectors:
+    - type: http
+      port: 8080
+  adminConnectors:
+    - type: http
+      port: 8081
+
+
+# Logging settings.
+logging:
+
+  # The default level of all loggers. Can be OFF, ERROR, WARN, INFO, DEBUG, TRACE, or ALL.
+  level: INFO
+
+  # Logger-specific levels.
+  loggers:
+
+    # Overrides the level of com.example.dw.Thing and sets it to DEBUG.
+    "ch.ipt": DEBUG

@@ -1,0 +1,10 @@
+# Ignore IntelliJ Project Files
+*.iml
+.idea/
+
+# Ignore Maven-specific files
+target/
+dependency-reduced-pom.xml
+
+# Ignore Vagrant metadata
+/.vagrant

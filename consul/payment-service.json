@@ -1,0 +1,13 @@
+{
+  "service": {
+    "name": "payment",
+    "tags": [],
+    "port": 9090,
+    "connect": { "proxy": {} },
+    "check": {
+      "name": "Payment Service Health Check",
+      "http": "http://localhost:9091/ping",
+      "interval": "30s"
+    }
+  }
+}

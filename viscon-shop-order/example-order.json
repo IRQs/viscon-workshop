@@ -1,0 +1,17 @@
+{
+  "user": "Karl",
+  "items": [
+    {
+      "itemId": 1,
+      "count": 3
+    },
+    {
+      "itemId": 2,
+      "count": 5
+    },
+    {
+      "itemId": 3,
+      "count": 3
+    }
+  ]
+}
