@@ -54,24 +54,10 @@ public class OrderResource {
         try {
 
             if (conf.isServiceDiscoveryEnabled()) {
-                // TODO: Use Service Discovery with Consul to retrieve IP address of the Catalogue service
                 HealthClient healthClient = consulClient.healthClient();
 
-                // Discover only "healthy" nodes
-                List<ServiceHealth> nodes = healthClient.getHealthyServiceInstances("Catalogue").getResponse();
-
-                // Use first service or abort if no healthy service found
-                Optional<ServiceHealth> firstAvailableService = nodes.stream().findFirst();
-                if (firstAvailableService.isPresent()) {
-                    String catalogueServiceNodeIp = firstAvailableService.get().getNode().getAddress();
-                    LOGGER.debug("Catalogue Service discovered: {}", catalogueServiceNodeIp);
-                    response = client.target("http://"+catalogueServiceNodeIp+":9595")
-                            .path("catalogue")
-                            .request(MediaType.APPLICATION_JSON_TYPE)
-                            .get();
-                } else {
-                    return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("No healthy Catalogue service found.").build();
-                }
+                // TODO Step 4: Use Service Discovery with Consul to retrieve the dynamic IP address of the Catalogue service and call its /catalogue operation
+                return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("No healthy Catalogue service found.").build();
             } else {
                 response = client.target("http://"+conf.getCatalogueServiceIp()+":9595")
                         .path("catalogue")
@@ -112,14 +98,8 @@ public class OrderResource {
         try {
             Response paymentReponse;
             if (conf.isConnectProxyEnabled()) {
-                // TODO Step: Use Consul-managed proxy to connect to the Payment Service
-
-                //Response paymentReponse = client.target("http://"+conf.getPaymentServiceIp()+":9090")
-                paymentReponse = client.target("http://localhost:9191")
-                        .path("payment")
-                        .request(MediaType.APPLICATION_JSON_TYPE)
-                        .post(Entity.entity(paymentRequest, MediaType.APPLICATION_JSON_TYPE));
-
+                // TODO Step 5: Use Consul-managed proxy to connect to the Payment Service
+                paymentReponse = Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("Payment Service not available. Implement me!").build();
 
             } else {
                 paymentReponse = client.target("http://"+conf.getPaymentServiceIp()+":9090")

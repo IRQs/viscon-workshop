@@ -20,8 +20,6 @@
 
     <modules>
         <module>viscon-shop-order</module>
-        <module>viscon-shop-catalogue</module>
-        <module>viscon-shop-payment</module>
     </modules>
 
     <dependencyManagement>

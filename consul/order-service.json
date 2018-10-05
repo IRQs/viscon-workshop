@@ -4,16 +4,6 @@
     "tags": [],
     "address": "",
     "port": 9595,
-    "connect": {
-      "proxy": {
-        "config": {
-          "upstreams": [{
-             "destination_name": "payment",
-             "local_bind_port": 9191
-          }]
-        }
-      }
-    },
     "check": {
       "name": "Order Service Health Check",
       "http": "http://localhost:8081/ping",

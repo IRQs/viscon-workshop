@@ -1,16 +1,16 @@
-# TODO Step: Change the name of your shop
+# TODO Step 3: Change the name of your shop
 shopName: Awesome Energy Drinks
 
 catalogueServiceIp: 172.26.25.229
 paymentServiceIp: 172.26.25.229
 
-# TODO Step: Enable Service Discovery with Consul
-serviceDiscoveryEnabled: true
+# TODO Step 4: Enable Service Discovery with Consul
+serviceDiscoveryEnabled: false
 
-# TODO Step: Enable Connect proxy
-connectProxyEnabled: true
+# TODO Step 5: Enable Connect proxy
+connectProxyEnabled: false
 
-# TODO Step: Change configuration key to your host name (e.g. viscon-<your chosen host name>)
+# TODO Step 6: Change configuration key to your host name (e.g. viscon-<your chosen host name>)
 consulConfigurationKey: viscon-master
 
 server:
