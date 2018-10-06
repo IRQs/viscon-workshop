@@ -1,0 +1,10 @@
+{
+  "connect": {
+    "enabled": true
+  },
+
+  "gossip_lan": {
+    "probe_interval": "5s",
+    "probe_timeout": "2s"
+  }
+}
