@@ -57,6 +57,8 @@ public class OrderResource {
                 HealthClient healthClient = consulClient.healthClient();
 
                 // TODO Step 4: Use Service Discovery with Consul to retrieve the dynamic IP address of the Catalogue service and call its /catalogue operation
+
+                // TODO Step 4: You should call the next statement only when no healthy service was found
                 return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity("No healthy Catalogue service found.").build();
             } else {
                 response = client.target("http://"+conf.getCatalogueServiceIp()+":9595")

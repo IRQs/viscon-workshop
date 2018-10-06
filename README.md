@@ -11,7 +11,7 @@ The README is organized into distinct steps that follow the workshop's presentat
 
 ## Step 0: Prerequisites
 
-If you want to follow the exercises on your local machine, you will need prepare the development environment first. The exercise has been tested on Windows, but any other (sensible) operating system should work equally well (e.g. OS X, Debian, CentOS). While the actual development takes place directly on your host machine, our services will be executed within a virtual machine.
+If you want to follow the exercises on your local machine, you will need to prepare the development environment first. The exercise has been tested on Windows, but any other (sensible) operating system should work equally well (e.g. OS X, Debian, CentOS). While the actual development takes place directly on your host machine, our services will be executed within a virtual machine.
 
 Please install the following software on your machine:
 * [Oracle VM VirtualBox](https://www.virtualbox.org/wiki/Downloads) (tested with VirtualBox 5.2.18)
@@ -44,7 +44,7 @@ Now it's time to get you up and running. Open a shell (command line) and navigat
 λ vagrant up
 ```
 
-This might take a while, so take a break by listening to the "Introduction to Microservices" part of the presentation.
+This might take a while, so take a break while listening to the next part of the presentation.
 
 ## Step 2: One network to rule them all
 Once your virtual machine is ready, you can use the command `vagrant ssh` to log in using a _Secure Shell_ (SSH). At this point, your node is all by itself, living peacefully in its own network. But being alone is no fun, so let's join a virtual network. This enables your node to participate in our service mesh cluster later.
@@ -52,12 +52,12 @@ Once your virtual machine is ready, you can use the command `vagrant ssh` to log
 From within the virtual machine (bash), execute the following command:
 
 ```
-$ sudo zerotier-cli join <provided network id>
+$ sudo zerotier-cli join <network id provided by instructor>
 ```
 
-After you (successfully) joined the network, you should be assigned a new IP address that starts with `172.26.*`. You can identify your IP address with the command `ip addr`. Write down your 172.26.x.x IP address, you'll need it later. It should be the last entry. If there is no 172.26.x.x IP address, you might need to wait a bit and try again.
+When your node first joins the virtual network, it has to be authorized. Unfortunately, this is a manual process that has to be done by the instructor. That's why you should wait for further instructions before proceeding the exercise.
 
-When your node first joins the virtual network, it has to be authorized. Unfortunately, this is a manual process that has to be done by the instructor. That's why you should wait for further instructions before proceeding with the next step.
+After you (successfully) joined the network, you should be assigned a new IP address that starts with `172.26.*`. You can identify your IP address with the command `ip addr`. Write down your 172.26.x.x IP address, you'll need it later. It should be the last entry. If there is no 172.26.x.x IP address, you might need to wait a bit and try again.
 
 ## Step 3: Let's talk shop
 
@@ -80,7 +80,7 @@ Start your favorite Java IDE and open the root project file `pom.xml`. Navigate 
 When your Order Service processes a new order, it is going to call the _VIScon Catalogue Service_ to retrieve all available energy drinks. Let's retrieve this list manually from your node to check your connectivity:
 
 ```
-$ curl -s http://<viscon-master-ip>:9595/catalogue | jq
+$ curl -s http://<viscon-services-ip>:9595/catalogue | jq
 ```
 
 You should receive a list of energy drinks and their prices.
@@ -112,8 +112,10 @@ Example payload (JSON):
 
 However, before you go ahead and call that operation, you need to edit the `config.yml` file and change the IP addresses of the Catalogue and Payment service. The instructor will let you know the current IP addresses to be used in this exercise.
 
-Now you're ready to call your _VIScon Order Service_. First, make sure your service is running. Then, open another shell on your node, navigate to the project folder and execute the following command:
+Now you're ready to call your _VIScon Order Service_. First, make sure that have recompiled & restarted your service. It should run on port 8080. Then, in another shell on your node, navigate to the project folder and execute the following command:
 ```
+$ cd /viscon/viscon-shop-order
+
 # Place a new order
 $ curl -s -H "Content-Type: application/json" -d @example-order.json http://localhost:8080/order | jq
 
@@ -124,7 +126,7 @@ $ curl -s -H "Content-Type: application/json" -d @example-order.json http://loca
 }
 ```
 
-You can edit the `example-order.json` file and change your order. Please note that the `name` value should not be changed. The `itemId` ranges from 1 to 10. Of course, you can also use Postman and call the Order Service from your host machine using the URL http://192.168.33.15:8080/order.
+You can edit the `example-order.json` file and change your order. Please note that if you change the `name` to anything else than `Karl`, your order will be declined by the Payment Service. The `itemId` ranges from 1 to 10. Of course, you can also use Postman and call the Order Service from your host machine using the URL http://192.168.33.15:8080/order.
 
 ## Step 4: Service Discovery
 
@@ -177,7 +179,7 @@ $ dig @127.0.0.1 -p 8600 payment.service.consul
 We can also use the HTTP API instead. The HTTP API runs on port 8500.
 ```
 # Query the Catalogue Service using the HTTP API
-$ curl -s http://localhost:8500/v1/catalog/service/catalogue | jq
+$ curl -s http://localhost:8500/v1/health/service/catalogue?passing | jq
 ```
 
 ### Implement: Use Service Discovery in your VIScon Order Service
@@ -190,7 +192,7 @@ Refer to the library's documentation to learn how to use the Consul Client for J
 
 ## Step 5: Service Segmentation
 
-Consul Connect provides authorized service-to-service connections by deploying local proxies that are managed by Consul. Instead of calling services directly, applications talk to a so-called _sidecar proxy_ that is deployed alongside the application itself.
+Consul Connect provides authorized service-to-service connections by deploying local proxies that are managed by Consul. Instead of calling services directly, applications can talk to a so-called _sidecar proxy_ that is deployed alongside the application itself.
 
 ### Register your VIScon Order Service with Consul
 Before your Order Service can safely communicate with the Payment Service, you have to register it with Consul so that Consul Connect can manage it. Consul services can be described in service definition files (JSON or HCL Format). To register our service, first edit the file `consul/order-service.json` and change the `name` value to _either_ `order-service-front` or `order-service-back`. If you (physically) sit in the front of the audience, choose the former. If you sit in the back, choose the latter. This distinction is for demonstration purposes only and will be explained later. Copy the file to Consul's configuration directory and reload Consul:
@@ -226,6 +228,9 @@ Instead of calling the Payment Service directly, we are now going to configure a
     ...
   }
 }
+
+# Copy service definition to Consul's configuration directory
+$ sudo cp /viscon/consul/order-service.json /etc/consul.d/
 
 # Reload Consul to load new configuration
 $ consul reload
