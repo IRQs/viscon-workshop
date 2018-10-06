@@ -137,6 +137,9 @@ Finally, we are ready to get to know Consul, our Service Mesh solution of choice
 Before we can query Consul and inquire about services, we have to start a local Consul agent instance and tell it to join the Consul cluster. Please note that the example responses below will differ from your actual node. For your convenience, run the Consul process in a new terminal window.
 
 ```
+# Copy the Consul agent configuration to Consul's configuration directory
+$ sudo cp /viscon/consul/consul-config.json /etc/consul.d/
+
 # Start the Consul Agent in the background. You also need to advertise your 172.26.x.x IP address, so other Consul nodes can find you
 $ cd ~
 $ consul agent -data-dir=/tmp/consul -config-dir=/etc/consul.d -advertise <your IP address> &
